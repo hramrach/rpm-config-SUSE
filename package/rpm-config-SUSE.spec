@@ -37,6 +37,13 @@ BuildArch:      noarch
 This package contains the RPM configuration data for the SUSE and
 openSUSE distribution families.
 
+%package reproducible-builds
+Summary:        RPM macros for reproducible-builds
+
+%description reproducible-builds
+This package contains the RPM macros for normalizing
+more details about a build (e.g. buildhost, buildtime)
+
 %prep
 %setup -q
 
@@ -83,6 +90,7 @@ cp -a macros.d %{buildroot}%{_rpmconfigdir}
 %doc README.md
 %{_rpmconfigdir}/suse/
 %{_rpmconfigdir}/macros.d/macros.*
+%exclude %{_rpmconfigdir}/macros.d/macros.reproducible-builds
 %{_rpmconfigdir}/fileattrs/*
 %{_rpmconfigdir}/brp-suse
 %{_rpmconfigdir}/firmware.prov
@@ -92,5 +100,8 @@ cp -a macros.d %{buildroot}%{_rpmconfigdir}
 %{_rpmconfigdir}/find-provides.ksyms
 %{_rpmconfigdir}/find-requires.ksyms
 %{_rpmconfigdir}/find-supplements.ksyms
+
+%files reproducible-builds
+%{_rpmconfigdir}/macros.d/macros.reproducible-builds
 
 %changelog
