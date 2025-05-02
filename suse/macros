@@ -230,6 +230,9 @@
 %cflags_profile_generate -fprofile-update=atomic -fprofile-generate
 %cflags_profile_feedback -fprofile-use
 
+# Reproducible builds
+%build_mtime_policy clamp_to_buildtime
+
 %suse_install_update_message() \
     install -D -m 644 %1 %buildroot/var/adm/update-messages/%{name}-%{version}-%{release}-%(basename %1).txt \
 %nil
