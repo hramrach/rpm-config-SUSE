@@ -1,12 +1,12 @@
 #! /bin/bash
 
-IFS=$'\n'
-
 case "$1" in
 kernel-module-*)    ;; # Fedora kernel module package names start with
                       # kernel-module.
-kernel*)           is_kernel_package=1 ;;
+kernel-*)           cat > /dev/null ; exit 0 ;;
 esac
+
+IFS=$'\n'
 
 modules=()
 modreqs=""
