@@ -1,5 +1,13 @@
 #!/bin/bash
 
+case "$1" in
+kernel-module-*)    ;; # Fedora kernel module package names start with
+                      # kernel-module.
+kernel-*-extra)     ;; # Generate supplements for kernel-default-extra and -optional
+kernel-*-optional)  ;;
+kernel-*)           cat > /dev/null ; exit 0 ;;
+esac
+
 IFS=$'\n'
 
 print_modaliases() {
