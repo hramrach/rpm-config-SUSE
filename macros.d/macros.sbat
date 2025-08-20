@@ -12,5 +12,5 @@
 %sbat_distro_sle          sle
 %sbat_distro_summary_sle  SUSE Linux Enterprise
 
-%sbat_distro          %{?is_opensuse:%{sbat_distro_opensuse}}%{!?is_opensuse:%{sbat_distro_sle}}
-%sbat_distro_summary  %{?is_opensuse:%{sbat_distro_summary_opensuse}}%{!?is_opensuse:%{sbat_distro_summary_sle}}
+%sbat_distro          %[0%{?is_opensuse} ? "%{sbat_distro_opensuse}" : "%{sbat_distro_sle}" ]
+%sbat_distro_summary  %[0%{?is_opensuse} ? "%{sbat_distro_summary_opensuse}" : "%{sbat_distro_summary_sle}" ]
