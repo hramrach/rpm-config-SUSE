@@ -3,6 +3,16 @@
 trap 'rm -f "$tmp"' EXIT
 tmp=$(mktemp --suffix=.ko)
 
+function read_builtin() {
+        if [ -e "$1" ] ; then
+                while read modname ; do
+                        echo "kmod($(basename "$modname" | tr '-' '_'))"
+                done < "$1"
+        else
+                echo "Builtin modules for $2 not available in $1" >&2
+        fi
+}
+
 while read f; do
     test -e "$f" || continue
     is_module=""
@@ -10,21 +20,23 @@ while read f; do
     *.debug)
         continue
         ;;
-    */boot/vmlinu[xz]-*)
-        version=${f##*/vmlinu[xz]-}
+    */usr/lib/modules/*/vmlinux | */usr/lib/modules/*/vmlinux.[gx]z | */usr/lib/modules/*/vmlinux.zst)
+        version=${f%%/vmlinux.*}
+        version=${version##*/}
+        echo "kernel-uname-r = $version"
+        builtin="$(dirname $f)/modules.builtin"
+        read_builtin "$builtin" "$f"
+        flavor=${version##*-}
+        ;;
+    */boot/vmlinux-*)
+        version=${f##*/vmlinux-}
         version=${version%.[gx]z}
         inst_prefix="$(dirname $f)"
         inst_prefix="$(dirname $inst_prefix)"
         echo "kernel-uname-r = $version"
         builtin="/lib/modules/$version/modules.builtin"
         [ -e "$inst_prefix/usr$builtin" ] && builtin="/usr$builtin"
-        if [ -e "$inst_prefix/$builtin" ] ; then
-                while read modname ; do
-                        echo "kmod($(basename "$modname" | tr '-' '_'))"
-                done < "$inst_prefix/$builtin"
-        else
-                echo "Builtin modules for $f not available in $builtin" >&2
-        fi
+        read_builtin "$inst_prefix$builtin" "$f"
         flavor=${version##*-}
         ;;
     */lib/modules/*/*.ko | */lib/modules/*/*.ko.[gx]z | */lib/modules/*/*.ko.zst)
